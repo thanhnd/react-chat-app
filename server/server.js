@@ -20,8 +20,13 @@ io.on('connection', socket => {
         generateMessage('Admin', 'Welcome to the chatapp')
     )
 
-    socket.on('toServer', (msg) => {
-        console.log(msg)
+    socket.broadcast.emit('intro',
+        generateMessage('Admin', 'New user joined')
+    )
+
+    socket.on('createMessage', msg => {
+        io.emit('newMessage', 
+            generateMessage(msg.from, msg.text))
     })
 
     socket.on('disconnect', () => {
