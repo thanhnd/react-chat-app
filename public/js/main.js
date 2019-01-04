@@ -4,15 +4,15 @@ socket.on("connect", () => {
 })
 
 socket.on('welcome', (msg) => {
-    console.log(msg)
+    let li = $('<li></li>')
+    li.text(`${msg.from}: ${msg.text}`)
+    $('#messages').append(li)
 })
 
 socket.on('intro', (msg) => {
-    console.log(msg)
-})
-
-socket.on('newMessage', msg => {
-    console.log(msg)
+    let li = $('<li></li>')
+    li.text(`${msg.from}: ${msg.text}`)
+    $('#messages').append(li)
 })
 
 socket.on("disconnect", () => {
@@ -30,4 +30,10 @@ $('#message-form').on('submit', (e) => {
     })
 
     $('[name=message]').val("")
+})
+
+socket.on('newMessage', msg => {
+    let li = $('<li></li>')
+    li.text(`${msg.from}: ${msg.text}`)
+    $('#messages').append(li)
 })
