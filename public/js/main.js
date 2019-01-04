@@ -28,4 +28,6 @@ $('#message-form').on('submit', (e) => {
         text: $('[name=message]').val(),
         createAt: new Date()
     })
+
+    $('[name=message]').val("")
 })
