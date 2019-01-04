@@ -32,8 +32,32 @@ $('#message-form').on('submit', (e) => {
     $('[name=message]').val("")
 })
 
+$('#send-location').on('click', () => {
+    if(!navigator.geolocation) {
+        alert("Old browser not suppot")
+    } else {
+        navigator.geolocation.getCurrentPosition(position => {
+            socket.emit('createLocationMesssage', {
+                from: "user",
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            })
+        })
+    }
+})
+
 socket.on('newMessage', msg => {
     let li = $('<li></li>')
     li.text(`${msg.from}: ${msg.text}`)
+    $('#messages').append(li)
+})
+
+socket.on('newLocationMessage', msg => {
+    let li = $('<li></li>')
+    let a = $('<a target="_brank">My Location</a>')
+    a.attr('href', msg.url)
+    li.text(`${msg.from}: `)
+    li.append(a)
+    
     $('#messages').append(li)
 })
