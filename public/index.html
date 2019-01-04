@@ -17,14 +17,8 @@
             console.log("Connected")
         })
 
-        socket.on('createMessage', (msg) => {
+        socket.on('welcome', (msg) => {
             console.log(msg)
-        })
-
-        socket.emit('toServer', {
-            from: "thanhng",
-            text: "Hello tong dai",
-            createAt: new Date()
         })
 
         socket.on("disconnect", () => {

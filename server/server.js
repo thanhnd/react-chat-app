@@ -4,6 +4,8 @@ const http = require('http')
 const express = require('express')
 const socketIO = require('socket.io')
 
+const {generateMessage} = require('../utils/message')
+
 const publicPath = path.join(__dirname, '../public/')
 const app = express()
 const server = http.createServer(app)
@@ -14,12 +16,9 @@ io.on('connection', socket => {
 
     console.log("User connected")
 
-    socket.emit('createMessage', {
-        from: "Admin",
-        text: "Hello user",
-        createAt: new Date()
-
-    })
+    socket.emit('welcome', 
+        generateMessage('Admin', 'Welcome to the chatapp')
+    )
 
     socket.on('toServer', (msg) => {
         console.log(msg)
