@@ -15,27 +15,31 @@ var io = socketIO(server)
 io.on('connection', socket => {
 
     console.log("User connected")
-
-    socket.emit('welcome', 
+    socket.on("joinRoom", msg => {
+        const {name, room} = msg.params
+        socket.join(room)
+        
+        socket.to(room).emit('welcome', 
         generateMessage('Admin', 'Welcome to the chatapp')
     )
 
-    socket.broadcast.emit('intro',
-        generateMessage('Admin', 'New user joined')
-    )
-
-    socket.on('createMessage', msg => {
-        io.emit('newMessage', 
-            generateMessage(msg.from, msg.text))
-    })
-
-    socket.on('createLocationMesssage', msg => {
-        io.emit('newLocationMessage',
-            generateLocationMessage(msg.from, msg.lat,msg.lng))
-    })
-
-    socket.on('disconnect', () => {
-        console.log("User disconnected")
+        socket.broadcast.to(room).emit('intro',
+            generateMessage('Admin', 'New user joined')
+        )    
+        
+        socket.on('createMessage', msg => {
+            io.to(room).emit('newMessage', 
+                generateMessage(msg.from, msg.text))
+        })
+    
+        socket.on('createLocationMesssage', msg => {
+            io.to(room).emit('newLocationMessage',
+                generateLocationMessage(msg.from, msg.lat,msg.lng))
+        })
+    
+        socket.on('disconnect', () => {
+            console.log("User disconnected")
+        })
     })
 })
 

@@ -1,6 +1,9 @@
 const socket = io()
 socket.on("connect", () => {
     console.log("Connected")
+    socket.emit("joinRoom", {
+        params: $.deparam(window.location.search)
+    })
 })
 
 socket.on('welcome', (msg) => {
@@ -79,3 +82,5 @@ socket.on('newLocationMessage', msg => {
 
     $('#messages').append(html)
 })
+
+console.log($.deparam(window.location.search))
