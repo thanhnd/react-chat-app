@@ -6,28 +6,35 @@ socket.on("connect", () => {
     })
 })
 
+function renderTemplate(msg) {
+    let template = $('#message-template').html()
+    let html = Mustache.render(template, {
+        from: msg.from,
+        createAt: moment(msg.createAt).format('hh:mm a'),
+        text: msg.text
+    })
+
+    return html
+}
+
 socket.on('welcome', (msg) => {
-    let li = $('<li></li>')
-    li.text(`${msg.from}: ${msg.text}`)
-    $('#messages').append(li)
+
+    $('#messages').append(renderTemplate(msg))
 })
 
 socket.on('intro', (msg) => {
-    let li = $('<li></li>')
-    li.text(`${msg.from}: ${msg.text}`)
-    $('#messages').append(li)
+    $('#messages').append(renderTemplate(msg))
 })
 
 socket.on("disconnect", () => {
-    console.log("Disconneted")
+    $('#messages').append(renderTemplate(msg))
 })
-
 
 $('#message-form').on('submit', (e) => {
     e.preventDefault()
 
     socket.emit('createMessage', {
-        from: 'User',
+        from: $.deparam(window.location.search).name,
         text: $('[name=message]').val(),
         createAt: new Date()
     })
@@ -41,7 +48,7 @@ $('#send-location').on('click', () => {
     } else {
         navigator.geolocation.getCurrentPosition(position => {
             socket.emit('createLocationMesssage', {
-                from: "user",
+                from: $.deparam(window.location.search).name,
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             })
@@ -50,18 +57,7 @@ $('#send-location').on('click', () => {
 })
 
 socket.on('newMessage', msg => {
-    let li = $('<li></li>')
-    // li.text(`${msg.from}  ${moment(msg.createAt).format('hh:mm a')}: ${msg.text}`)
-    // $('#messages').append(li)
-
-    let template = $('#message-template').html()
-    let html = Mustache.render(template, {
-        from: msg.from,
-        createAt: moment(msg.createAt).format('hh:mm a'),
-        text: msg.text
-    })
-
-    $('#messages').append(html)
+    $('#messages').append(renderTemplate(msg))
 })
 
 socket.on('newLocationMessage', msg => {
