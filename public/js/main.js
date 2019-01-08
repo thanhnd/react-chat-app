@@ -48,16 +48,34 @@ $('#send-location').on('click', () => {
 
 socket.on('newMessage', msg => {
     let li = $('<li></li>')
-    li.text(`${msg.from}  ${moment(msg.createAt).format('hh:mm a')}: ${msg.text}`)
-    $('#messages').append(li)
+    // li.text(`${msg.from}  ${moment(msg.createAt).format('hh:mm a')}: ${msg.text}`)
+    // $('#messages').append(li)
+
+    let template = $('#message-template').html()
+    let html = Mustache.render(template, {
+        from: msg.from,
+        createAt: moment(msg.createAt).format('hh:mm a'),
+        text: msg.text
+    })
+
+    $('#messages').append(html)
 })
 
 socket.on('newLocationMessage', msg => {
-    let li = $('<li></li>')
-    let a = $('<a target="_brank">My Location</a>')
-    a.attr('href', msg.url)
-    li.text(`${msg.from} ${moment(msg.createAt).format('hh:mm a')}: `)
-    li.append(a)
+    // let li = $('<li></li>')
+    // let a = $('<a target="_brank">My Location</a>')
+    // a.attr('href', msg.url)
+    // li.text(`${msg.from} ${moment(msg.createAt).format('hh:mm a')}: `)
+    // li.append(a)
     
-    $('#messages').append(li)
+    // $('#messages').append(li)
+
+    let template = $('#location-message-template').html()
+    let html = Mustache.render(template, {
+        from: msg.from,
+        createAt: moment(msg.createAt).format('hh:mm a'),
+        url: msg.url
+    })
+
+    $('#messages').append(html)
 })
