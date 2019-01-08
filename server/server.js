@@ -6,6 +6,10 @@ const socketIO = require('socket.io')
 
 const { generateMessage, generateLocationMessage } = require('../utils/message')
 
+const Users = require('../utils/users')
+
+const users = new Users()
+
 const publicPath = path.join(__dirname, '../public/')
 const app = express()
 const server = http.createServer(app)
@@ -23,6 +27,12 @@ io.on('connection', socket => {
         const { name, room } = msg.params
         socket.join(room)
 
+        users.addUser(socket.id, name, room)
+
+        io.to(room).emit('usersInRoom',
+            generateMessage('Admin', users.findUsersByRoom(room))
+        )
+
         socket.broadcast.to(room).emit('intro',
             generateMessage('Admin', `${name} joined the room`)
         )
@@ -38,8 +48,10 @@ io.on('connection', socket => {
         })
 
         socket.on('disconnect', () => {
+            users.removeUserById(socket.id)
             io.to(room).emit('newMessage',
                 generateMessage('Admin', `${name} disconnect`))
+
         })
     })
 })

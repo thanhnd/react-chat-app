@@ -26,10 +26,6 @@ socket.on('intro', (msg) => {
     $('#messages').append(renderTemplate(msg))
 })
 
-socket.on("disconnect", () => {
-    $('#messages').append(renderTemplate(msg))
-})
-
 $('#message-form').on('submit', (e) => {
     e.preventDefault()
 
@@ -79,4 +75,15 @@ socket.on('newLocationMessage', msg => {
     $('#messages').append(html)
 })
 
-console.log($.deparam(window.location.search))
+socket.on('usersInRoom', msg => {
+    console.log(msg)
+
+    let ol = $('<ol></ol>')
+    msg.text.forEach(user => {
+        let li = $('<li></li>')
+        li.text(`${user.name}`)
+        ol.append(li)
+    })
+
+    $('#users').html(ol)
+})
